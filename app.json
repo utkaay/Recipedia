@@ -1,23 +1,22 @@
 {
   "expo": {
-    "name": "RecipeBox",
-    "slug": "RecipeBox",
+    "name": "Recipedia",
+    "slug": "recipedia",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "recipebox",
-    "userInterfaceStyle": "automatic",
+    "scheme": "recipedia",
+    "userInterfaceStyle": "light",
     "ios": {
       "icon": "./assets/expo.icon"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#F7F4EC",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
-      },
-      "predictiveBackGestureEnabled": false
+      }
     },
     "web": {
       "output": "server",
@@ -28,7 +27,7 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
+          "backgroundColor": "#F7F4EC",
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
         }

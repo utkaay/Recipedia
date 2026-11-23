@@ -41,3 +41,6 @@ example
 # generated native folders
 /ios
 /android
+
+# Local submission archive (generated from a committed source revision)
+/submission/Recipedia-submission.zip
