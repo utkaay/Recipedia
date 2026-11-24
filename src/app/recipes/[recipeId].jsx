@@ -17,9 +17,10 @@ export function RecipeDetailsScreen() {
   const styles = createStyles(colors);
   const router = useRouter();
   const params = useLocalSearchParams();
-  const recipeId = Array.isArray(params.recipeId)
-    ? params.recipeId[0]
-    : params.recipeId;
+  let recipeId = params.recipeId;
+  if (Array.isArray(recipeId)) {
+    recipeId = recipeId[0];
+  }
   const { recipes, status, error, retryLoad, deleteRecipe, isSaving } =
     useRecipes();
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -61,10 +62,10 @@ export function RecipeDetailsScreen() {
       setConfirmDelete(false);
       router.replace("/recipes");
     } catch (deleteFailure) {
-      const message =
-        deleteFailure instanceof Error
-          ? deleteFailure.message
-          : "The recipe could not be deleted. Try again.";
+      let message = "The recipe could not be deleted. Try again.";
+      if (deleteFailure instanceof Error) {
+        message = deleteFailure.message;
+      }
       setDeleteError(message);
     }
   }
@@ -77,7 +78,7 @@ export function RecipeDetailsScreen() {
       return (
         <FeedbackState
           title = "Recipes could not be loaded"
-          message = {error ?? undefined}
+          message = {error}
           actionLabel = "Retry"
           onAction = {retryLoad} />
       );
