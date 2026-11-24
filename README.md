@@ -41,11 +41,6 @@
 
    The project also has `npm run android`, `npm run ios`, `npm run web`, and `npm run lint` scripts.
 
-   ## Current Phase
-
-   This repository currently contains the Phase 1 application. It stores data locally on the device. There is no backend or Supabase integration in this phase. Registered accounts do not sync across devices, and there is no password-recovery service. The app signs out after a restart.
-
-   New accounts receive the six starter recipes when their recipe collection has never been saved. Existing collections, including an empty collection, are restored from AsyncStorage. Native account passwords use SecureStore; the web fallback uses AsyncStorage.
 
    ## Checks
 
@@ -67,3 +62,7 @@
    - Log out and verify Back does not return to signed-in screens.
    - Close and reopen the app to confirm saved data persists.
    - Check the empty collection and loading/storage error states.
+
+## AI-use statement
+
+   For Phase 1 of Recipedia, I used ChatGPT to assist with UI/UX design layout, image generation, and guidance on building and troubleshooting most of the components section. All final designs, tweaks, and code were reviewed and implemented by me.
