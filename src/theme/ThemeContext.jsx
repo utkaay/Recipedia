@@ -12,9 +12,15 @@ export function ThemeProvider({ children }) {
   const { account } = useSession();
   const [selectedPalette, setSelectedPalette] = useState(defaultPalette);
   const [hydratedAccountId, setHydratedAccountId] = useState(null);
-  const accountId = account?.id ?? "guest";
+  let accountId = "guest";
+  if (account && account.id !== undefined && account.id !== null) {
+    accountId = account.id;
+  }
   const isReady = hydratedAccountId === accountId;
-  const activePalette = isReady ? selectedPalette : defaultPalette;
+  let activePalette = defaultPalette;
+  if (isReady) {
+    activePalette = selectedPalette;
+  }
 
   useEffect(() => {
     let isCurrentLoad = true;
@@ -24,12 +30,17 @@ export function ThemeProvider({ children }) {
         const storedPalette = await AsyncStorage.getItem(
           `${THEME_STORAGE_PREFIX}${accountId}`,
         );
-        const isValidPalette =
+        const isValidPalette = Boolean(
           storedPalette &&
-          Object.prototype.hasOwnProperty.call(palettes, storedPalette);
+            Object.prototype.hasOwnProperty.call(palettes, storedPalette),
+        );
 
         if (isCurrentLoad) {
-          setSelectedPalette(isValidPalette ? storedPalette : defaultPalette);
+          let paletteToUse = defaultPalette;
+          if (isValidPalette) {
+            paletteToUse = storedPalette;
+          }
+          setSelectedPalette(paletteToUse);
         }
       } catch {
         if (isCurrentLoad) {
