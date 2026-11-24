@@ -13,15 +13,34 @@ export function FeedbackState({
 }) {
   const { colors } = useTheme();
   const styles = createStyles(colors);
+  let loadingIndicator;
+  if (loading) {
+    loadingIndicator = (
+      <ActivityIndicator size = "large" color = {colors.green} />
+    );
+  }
+
+  let messageContent;
+  if (message) {
+    messageContent = <Text style = {styles.message} >{message}</Text>;
+  }
+
+  let actionButton;
+  if (actionLabel && onAction) {
+    actionButton = (
+      <AppButton
+        label = {actionLabel}
+        onPress = {onAction}
+        variant = "outline" />
+    );
+  }
 
   return (
     <View style = {styles.container} >
-      {loading ? <ActivityIndicator size = "large" color = {colors.green} /> : null}
+      {loadingIndicator}
       <Text style = {styles.title} >{title}</Text>
-      {message ? <Text style = {styles.message} >{message}</Text> : null}
-      {actionLabel && onAction ? (
-        <AppButton label = {actionLabel} onPress = {onAction} variant = "outline" />
-      ) : null}
+      {messageContent}
+      {actionButton}
     </View>
   );
 }

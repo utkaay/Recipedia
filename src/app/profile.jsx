@@ -38,6 +38,20 @@ export function ProfileScreen() {
   const [isSavingTheme, setIsSavingTheme] = useState(false);
   const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
   const isDemoAccount = account?.id === demoAccount.id;
+  let accountName = "Cook";
+  let accountEmail = "";
+  if (account && account.name !== undefined && account.name !== null) {
+    accountName = account.name;
+  }
+  if (account && account.email !== undefined && account.email !== null) {
+    accountEmail = account.email;
+  }
+  let avatarName = accountName;
+  if (account && account.name !== undefined && account.name !== null) {
+    avatarName = account.name;
+  } else {
+    avatarName = "R";
+  }
 
   function updatePassword(field, value) {
     setPasswords((currentPasswords) => ({
@@ -80,11 +94,11 @@ export function ProfileScreen() {
       });
       setPasswordSuccess("Your password was changed.");
     } catch (error) {
-      setPasswordError(
-        error instanceof Error
-          ? error.message
-          : "Your password could not be changed. Try again.",
-      );
+      let message = "Your password could not be changed. Try again.";
+      if (error instanceof Error) {
+        message = error.message;
+      }
+      setPasswordError(message);
     }
   }
 
@@ -95,11 +109,11 @@ export function ProfileScreen() {
     try {
       await selectPalette(paletteId);
     } catch (error) {
-      setThemeError(
-        error instanceof Error
-          ? error.message
-          : "Your theme could not be saved. Try again.",
-      );
+      let message = "Your theme could not be saved. Try again.";
+      if (error instanceof Error) {
+        message = error.message;
+      }
+      setThemeError(message);
     } finally {
       setIsSavingTheme(false);
     }
@@ -111,6 +125,90 @@ export function ProfileScreen() {
     router.replace("/login");
   }
 
+  let themeErrorMessage;
+  if (themeError) {
+    themeErrorMessage = (
+      <Text accessibilityRole = "alert" style = {styles.error} >
+        {themeError}
+      </Text>
+    );
+  }
+
+  let passwordErrorMessage;
+  if (passwordError) {
+    passwordErrorMessage = (
+      <Text accessibilityRole = "alert" style = {styles.error} >
+        {passwordError}
+      </Text>
+    );
+  }
+
+  let passwordSuccessMessage;
+  if (passwordSuccess) {
+    passwordSuccessMessage = (
+      <Text accessibilityRole = "status" style = {styles.success} >
+        {passwordSuccess}
+      </Text>
+    );
+  }
+
+  let passwordSection;
+  if (isDemoAccount) {
+    passwordSection = (
+      <Text style = {styles.sectionDescription} >
+        Password changes are unavailable for the sample account.
+      </Text>
+    );
+  } else {
+    passwordSection = (
+      <>
+        <Text style = {styles.sectionDescription} >
+          Update the password saved for this account on this device.
+        </Text>
+        <AppTextInput
+          label = "Current password"
+          value = {passwords.currentPassword}
+          onChangeText = {(value) =>
+            updatePassword("currentPassword", value)
+          }
+          error = {fieldErrors.currentPassword}
+          secureTextEntry
+          autoCapitalize = "none"
+          autoCorrect = {false}
+          autoComplete = "current-password" />
+        <AppTextInput
+          label = "New password"
+          value = {passwords.newPassword}
+          onChangeText = {(value) => updatePassword("newPassword", value)}
+          error = {fieldErrors.newPassword}
+          placeholder = "At least 8 characters"
+          secureTextEntry
+          autoCapitalize = "none"
+          autoCorrect = {false}
+          autoComplete = "new-password" />
+        <AppTextInput
+          label = "Confirm new password"
+          value = {passwords.confirmPassword}
+          onChangeText = {(value) =>
+            updatePassword("confirmPassword", value)
+          }
+          error = {fieldErrors.confirmPassword}
+          secureTextEntry
+          autoCapitalize = "none"
+          autoCorrect = {false}
+          autoComplete = "new-password"
+          returnKeyType = "done"
+          onSubmitEditing = {saveNewPassword} />
+        {passwordErrorMessage}
+        {passwordSuccessMessage}
+        <AppButton
+          label = "Save New Password"
+          onPress = {saveNewPassword}
+          loading = {isSubmitting} />
+      </>
+    );
+  }
+
   return (
     <>
       <AppScreen bottomSpace >
@@ -120,12 +218,12 @@ export function ProfileScreen() {
         <View style = {styles.accountCard} >
           <View style = {styles.avatar} >
             <Text style = {styles.avatarText} >
-              {(account?.name ?? "R").charAt(0).toUpperCase()}
+              {avatarName.charAt(0).toUpperCase()}
             </Text>
           </View>
           <View style = {styles.accountDetails} >
-            <Text style = {styles.accountName} >{account?.name ?? "Cook"}</Text>
-            <Text style = {styles.accountEmail} >{account?.email ?? ""}</Text>
+            <Text style = {styles.accountName} >{accountName}</Text>
+            <Text style = {styles.accountEmail} >{accountEmail}</Text>
           </View>
         </View>
 
@@ -136,6 +234,14 @@ export function ProfileScreen() {
           </Text>
           {Object.entries(palettes).map(([paletteId, palette]) => {
             const selected = paletteId === selectedPalette;
+            let paletteName = paletteId;
+            if (paletteId === "herb") {
+              paletteName = "green";
+            }
+            let selectedIndicator;
+            if (selected) {
+              selectedIndicator = <View style = {styles.radioInner} />;
+            }
             return (
               <Pressable
                 key = {paletteId}
@@ -158,7 +264,7 @@ export function ProfileScreen() {
                 <View style = {styles.paletteCopy} >
                   <Text style = {styles.paletteName} >{palette.name}</Text>
                   <Text style = {styles.paletteSubtitle} >
-                    Cream, {paletteId === "herb" ? "green" : paletteId}, and
+                    Cream, {paletteName}, and
                     warm accents
                   </Text>
                 </View>
@@ -167,81 +273,17 @@ export function ProfileScreen() {
                     styles.radioOuter,
                     selected && styles.radioOuterSelected,
                   ]} >
-                  {selected ? <View style = {styles.radioInner} /> : null}
+                  {selectedIndicator}
                 </View>
               </Pressable>
             );
           })}
-          {themeError ? (
-            <Text accessibilityRole = "alert" style = {styles.error} >
-              {themeError}
-            </Text>
-          ) : null}
+          {themeErrorMessage}
         </View>
 
         <View style = {styles.section} >
           <Text style = {styles.sectionTitle} >Change Password</Text>
-          {isDemoAccount ? (
-            <Text style = {styles.sectionDescription} >
-              Password changes are unavailable for the sample account.
-            </Text>
-          ) : (
-            <>
-              <Text style = {styles.sectionDescription} >
-                Update the password saved for this account on this device.
-              </Text>
-              <AppTextInput
-                label = "Current password"
-                value = {passwords.currentPassword}
-                onChangeText = {(value) =>
-                  updatePassword("currentPassword", value)
-                }
-                error = {fieldErrors.currentPassword}
-                secureTextEntry
-                autoCapitalize = "none"
-                autoCorrect = {false}
-                autoComplete = "current-password" />
-              <AppTextInput
-                label = "New password"
-                value = {passwords.newPassword}
-                onChangeText = {(value) =>
-                  updatePassword("newPassword", value)
-                }
-                error = {fieldErrors.newPassword}
-                placeholder = "At least 8 characters"
-                secureTextEntry
-                autoCapitalize = "none"
-                autoCorrect = {false}
-                autoComplete = "new-password" />
-              <AppTextInput
-                label = "Confirm new password"
-                value = {passwords.confirmPassword}
-                onChangeText = {(value) =>
-                  updatePassword("confirmPassword", value)
-                }
-                error = {fieldErrors.confirmPassword}
-                secureTextEntry
-                autoCapitalize = "none"
-                autoCorrect = {false}
-                autoComplete = "new-password"
-                returnKeyType = "done"
-                onSubmitEditing = {saveNewPassword} />
-              {passwordError ? (
-                <Text accessibilityRole = "alert" style = {styles.error} >
-                  {passwordError}
-                </Text>
-              ) : null}
-              {passwordSuccess ? (
-                <Text accessibilityRole = "status" style = {styles.success} >
-                  {passwordSuccess}
-                </Text>
-              ) : null}
-              <AppButton
-                label = "Save New Password"
-                onPress = {saveNewPassword}
-                loading = {isSubmitting} />
-            </>
-          )}
+          {passwordSection}
         </View>
 
         <View style = {styles.logoutSection} >

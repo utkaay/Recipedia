@@ -45,6 +45,10 @@ export function HomeScreen() {
   if (recipeCount === 1) {
     recipeNoun = "recipe";
   }
+  let greetingName = "cook";
+  if (account && account.name !== undefined && account.name !== null) {
+    greetingName = account.name;
+  }
 
   function browseRecipes() {
     router.replace("/recipes");
@@ -63,10 +67,14 @@ export function HomeScreen() {
         loading />
     );
   } else if (status === "error") {
+    let errorMessage = error;
+    if (errorMessage === undefined || errorMessage === null) {
+      errorMessage = "Check your device storage and try again.";
+    }
     collectionContent = (
       <FeedbackState
         title = "Recipes could not be loaded"
-        message = {error ?? "Check your device storage and try again."}
+        message = {errorMessage}
         actionLabel = "Retry"
         onAction = {retryLoad} />
     );
@@ -107,7 +115,7 @@ export function HomeScreen() {
     <>
       <AppScreen bottomSpace >
         <AppTopBar  />
-        <Text style = {styles.greeting} >Hello, {account?.name ?? "cook"}!</Text>
+        <Text style = {styles.greeting} >Hello, {greetingName}!</Text>
         <Text style = {styles.heading} >My Recipes</Text>
         {collectionContent}
       </AppScreen>

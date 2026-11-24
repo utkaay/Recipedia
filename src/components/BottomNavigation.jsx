@@ -61,6 +61,10 @@ export function BottomNavigation() {
       ]} >
       {navigationItems.map((item) => {
         const selected = isNavigationItemSelected(item);
+        let iconColor = colors.green;
+        if (selected) {
+          iconColor = colors.greenDark;
+        }
         return (
           <Pressable
             key = {item.label}
@@ -72,7 +76,7 @@ export function BottomNavigation() {
             <Ionicons
               name = {item.icon}
               size = {23}
-              color = {selected ? colors.greenDark : colors.green} />
+              color = {iconColor} />
             <Text style = {[styles.label, selected && styles.selectedLabel]} >
               {item.label}
             </Text>

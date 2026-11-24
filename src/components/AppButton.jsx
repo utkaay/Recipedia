@@ -15,11 +15,31 @@ export function AppButton({
   const { colors } = useTheme();
   const styles = createStyles(colors);
   const isDisabled = disabled || loading;
+  let buttonAccessibilityLabel = accessibilityLabel;
+  if (
+    buttonAccessibilityLabel === undefined ||
+    buttonAccessibilityLabel === null
+  ) {
+    buttonAccessibilityLabel = label;
+  }
+
+  let buttonContent;
+  if (loading) {
+    let spinnerColor = colors.white;
+    if (variant === "outline" || variant === "text") {
+      spinnerColor = colors.green;
+    }
+    buttonContent = <ActivityIndicator color = {spinnerColor} />;
+  } else {
+    buttonContent = (
+      <Text style = {[styles.label, styles[`${variant}Label`]]} >{label}</Text>
+    );
+  }
 
   return (
     <Pressable
       accessibilityRole = "button"
-      accessibilityLabel = {accessibilityLabel ?? label}
+      accessibilityLabel = {buttonAccessibilityLabel}
       accessibilityState = {{
         disabled: isDisabled,
         busy: loading,
@@ -33,16 +53,7 @@ export function AppButton({
         isDisabled && styles.disabled,
         style,
       ]} >
-      {loading ? (
-        <ActivityIndicator
-          color = {
-            variant === "outline" || variant === "text"
-              ? colors.green
-              : colors.white
-          } />
-      ) : (
-        <Text style = {[styles.label, styles[`${variant}Label`]]} >{label}</Text>
-      )}
+      {buttonContent}
     </Pressable>
   );
 }

@@ -57,12 +57,21 @@ export function LoginScreen() {
       await login(result.data.email, result.data.password);
       router.replace("/home");
     } catch (error) {
-      setFormError(
-        error instanceof Error
-          ? error.message
-          : "We could not sign you in. Try again.",
-      );
+      let message = "We could not sign you in. Try again.";
+      if (error instanceof Error) {
+        message = error.message;
+      }
+      setFormError(message);
     }
+  }
+
+  let formErrorMessage;
+  if (formError) {
+    formErrorMessage = (
+      <Text accessibilityRole = "alert" style = {styles.error} >
+        {formError}
+      </Text>
+    );
   }
 
   return (
@@ -98,11 +107,7 @@ export function LoginScreen() {
           autoComplete = "current-password"
           returnKeyType = "done"
           onSubmitEditing = {handleLogin} />
-        {formError ? (
-          <Text accessibilityRole = "alert" style = {styles.error} >
-            {formError}
-          </Text>
-        ) : null}
+        {formErrorMessage}
         <AppButton
           label = "Log In"
           onPress = {handleLogin}

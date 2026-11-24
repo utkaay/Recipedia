@@ -18,22 +18,39 @@ export function AppTextInput({
     error && styles.inputError,
     style,
   ];
+  let inputAccessibilityLabel = accessibilityLabel;
+  if (
+    inputAccessibilityLabel === undefined ||
+    inputAccessibilityLabel === null
+  ) {
+    inputAccessibilityLabel = label;
+  }
+
+  let inputAccessibilityHint;
+  if (error) {
+    inputAccessibilityHint = `Error: ${error}`;
+  }
+
+  let errorMessage;
+  if (error) {
+    errorMessage = (
+      <Text accessibilityRole = "alert" style = {styles.error} >
+        {error}
+      </Text>
+    );
+  }
 
   return (
     <View style = {styles.field} >
       <Text style = {styles.label} >{label}</Text>
       <TextInput
-        accessibilityLabel = {accessibilityLabel ?? label}
-        accessibilityHint = {error ? `Error: ${error}` : undefined}
+        accessibilityLabel = {inputAccessibilityLabel}
+        accessibilityHint = {inputAccessibilityHint}
         placeholderTextColor = {colors.muted}
         selectionColor = {colors.green}
         style = {inputStyles}
         {...inputProps} />
-      {error ? (
-        <Text accessibilityRole = "alert" style = {styles.error} >
-          {error}
-        </Text>
-      ) : null}
+      {errorMessage}
     </View>
   );
 }

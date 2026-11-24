@@ -27,6 +27,11 @@ export function AddRecipeScreen() {
     router.replace("/recipes");
   }
 
+  let loadErrorMessage;
+  if (error !== undefined && error !== null) {
+    loadErrorMessage = error;
+  }
+
   let formContent;
   if (status === "loading") {
     formContent = <FeedbackState title = "Preparing your recipe form" loading />;
@@ -34,7 +39,7 @@ export function AddRecipeScreen() {
     formContent = (
       <FeedbackState
         title = "Recipes could not be loaded"
-        message = {error ?? undefined}
+        message = {loadErrorMessage}
         actionLabel = "Retry"
         onAction = {retryLoad} />
     );

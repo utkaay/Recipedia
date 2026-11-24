@@ -100,12 +100,34 @@ export function RecipeForm({
     try {
       await onSubmit(result.data);
     } catch (error) {
-      setSubmitError(
-        error instanceof Error
-          ? error.message
-          : "The recipe could not be saved. Try again.",
-      );
+      let message = "The recipe could not be saved. Try again.";
+      if (error instanceof Error) {
+        message = error.message;
+      }
+      setSubmitError(message);
     }
+  }
+
+  let submitErrorMessage;
+  if (submitError) {
+    submitErrorMessage = (
+      <Text accessibilityRole = "alert" style = {styles.submitError} >
+        {submitError}
+      </Text>
+    );
+  }
+
+  let deleteButton;
+  if (onDelete) {
+    deleteButton = (
+      <AppButton
+        label = "Delete Recipe"
+        onPress = {onDelete}
+        variant = "danger"
+        disabled = {saving}
+        loading = {deleting}
+        style = {styles.deleteButton} />
+    );
   }
 
   return (
@@ -155,11 +177,7 @@ export function RecipeForm({
         multiline
         textAlignVertical = "top" />
 
-      {submitError ? (
-        <Text accessibilityRole = "alert" style = {styles.submitError} >
-          {submitError}
-        </Text>
-      ) : null}
+      {submitErrorMessage}
 
       <View style = {styles.actions} >
         <AppButton
@@ -175,15 +193,7 @@ export function RecipeForm({
           style = {styles.action} />
       </View>
 
-      {onDelete ? (
-        <AppButton
-          label = "Delete Recipe"
-          onPress = {onDelete}
-          variant = "danger"
-          disabled = {saving}
-          loading = {deleting}
-          style = {styles.deleteButton} />
-      ) : null}
+      {deleteButton}
     </View>
   );
 }

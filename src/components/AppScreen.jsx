@@ -13,12 +13,16 @@ import { useTheme } from "../theme/ThemeContext";
 
 export function AppScreen({ children, bottomSpace = false, centered = false }) {
   const { colors } = useTheme();
+  let keyboardBehavior;
+  if (Platform.OS === "ios") {
+    keyboardBehavior = "padding";
+  }
 
   return (
     <SafeAreaView edges = {["top", "left", "right"]} style = {styles.safeArea} >
       <KeyboardAvoidingView
         style = {[styles.safeArea, { backgroundColor: colors.background }]}
-        behavior = {Platform.OS === "ios" ? "padding" : undefined} >
+        behavior = {keyboardBehavior} >
         <ScrollView
           contentContainerStyle = {[
             styles.content,

@@ -26,12 +26,16 @@ export function CategorySelector({
         contentContainerStyle = {styles.row} >
         {categories.map((category) => {
           const isSelected = category === selected;
+          let accessibilityLabel = category;
+          if (isSelected) {
+            accessibilityLabel = `${category}, selected`;
+          }
           return (
             <Pressable
               key = {category}
               accessibilityRole = "button"
               accessibilityState = {{ selected: isSelected }}
-              accessibilityLabel = {`${category}${isSelected ? ", selected" : ""}`}
+              accessibilityLabel = {accessibilityLabel}
               onPress = {() => onSelect(category)}
               style = {[styles.chip, isSelected && styles.chipSelected]} >
               <Text
@@ -49,6 +53,14 @@ export function CategorySelector({
 export function CategoryPicker({ selected, onSelect, error }) {
   const { colors } = useTheme();
   const styles = createStyles(colors);
+  let errorMessage;
+  if (error) {
+    errorMessage = (
+      <Text accessibilityRole = "alert" style = {styles.error} >
+        {error}
+      </Text>
+    );
+  }
 
   return (
     <View style = {styles.pickerGroup} >
@@ -74,11 +86,7 @@ export function CategoryPicker({ selected, onSelect, error }) {
           );
         })}
       </View>
-      {error ? (
-        <Text accessibilityRole = "alert" style = {styles.error} >
-          {error}
-        </Text>
-      ) : null}
+      {errorMessage}
     </View>
   );
 }

@@ -48,10 +48,14 @@ export function RecipesScreen() {
       return <FeedbackState title = "Loading your recipes" loading />;
     }
     if (status === "error") {
+      let errorMessage = error;
+      if (errorMessage === undefined || errorMessage === null) {
+        errorMessage = "Check your device storage and try again.";
+      }
       return (
         <FeedbackState
           title = "Recipes could not be loaded"
-          message = {error ?? "Check your device storage and try again."}
+          message = {errorMessage}
           actionLabel = "Retry"
           onAction = {retryLoad} />
       );
@@ -97,6 +101,17 @@ export function RecipesScreen() {
     );
   }
 
+  let clearFiltersButton;
+  if (hasFilters) {
+    clearFiltersButton = (
+      <AppButton
+        label = "Clear filters"
+        onPress = {clearFilters}
+        variant = "text"
+        style = {styles.clearButton} />
+    );
+  }
+
   return (
     <>
       <AppScreen bottomSpace >
@@ -117,13 +132,7 @@ export function RecipesScreen() {
           selected = {category}
           onSelect = {setCategory}
           includeAll />
-        {hasFilters ? (
-          <AppButton
-            label = "Clear filters"
-            onPress = {clearFilters}
-            variant = "text"
-            style = {styles.clearButton} />
-        ) : null}
+        {clearFiltersButton}
         {getCollectionContent()}
       </AppScreen>
       <BottomNavigation  />

@@ -77,12 +77,21 @@ export function RegisterScreen() {
       await register(result.data.name, result.data.email, result.data.password);
       router.replace("/home");
     } catch (error) {
-      setFormError(
-        error instanceof Error
-          ? error.message
-          : "Your account could not be created. Try again.",
-      );
+      let message = "Your account could not be created. Try again.";
+      if (error instanceof Error) {
+        message = error.message;
+      }
+      setFormError(message);
     }
+  }
+
+  let formErrorMessage;
+  if (formError) {
+    formErrorMessage = (
+      <Text accessibilityRole = "alert" style = {styles.error} >
+        {formError}
+      </Text>
+    );
   }
 
   return (
@@ -142,11 +151,7 @@ export function RegisterScreen() {
           Your account and recipes are saved on this device. They will not sync
           between devices until cloud accounts are added.
         </Text>
-        {formError ? (
-          <Text accessibilityRole = "alert" style = {styles.error} >
-            {formError}
-          </Text>
-        ) : null}
+        {formErrorMessage}
         <AppButton
           label = "Create Account"
           onPress = {handleRegister}

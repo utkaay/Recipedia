@@ -17,17 +17,22 @@ export function AppTopBar({ showBack = false, onBack }) {
     router.back();
   }
 
+  let backButton;
+  if (showBack) {
+    backButton = (
+      <Pressable
+        accessibilityRole = "button"
+        accessibilityLabel = "Go back"
+        onPress = {goBack}
+        style = {styles.back} >
+        <Ionicons name = "chevron-back" size = {25} color = {colors.greenDark} />
+      </Pressable>
+    );
+  }
+
   return (
     <View style = {styles.bar} >
-      {showBack ? (
-        <Pressable
-          accessibilityRole = "button"
-          accessibilityLabel = "Go back"
-          onPress = {goBack}
-          style = {styles.back} >
-          <Ionicons name = "chevron-back" size = {25} color = {colors.greenDark} />
-        </Pressable>
-      ) : null}
+      {backButton}
       <Text style = {styles.brand} >Recipedia</Text>
     </View>
   );
