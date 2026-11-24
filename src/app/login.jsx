@@ -117,7 +117,7 @@ export function LoginScreen() {
         </View>
         <Image
           accessibilityLabel = "Tomatoes on the vine with fresh herbs"
-          source = {require("../../assets/images/recipedia/tomatoes-herbs.png")}
+          source = {require("../../assets/images/tomatoes-herbs.png")}
           resizeMode = "contain"
           style = {styles.illustration} />
       </View>

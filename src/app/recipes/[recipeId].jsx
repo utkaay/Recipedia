@@ -110,7 +110,7 @@ export function RecipeDetailsScreen() {
           </View>
           <Image
             accessibilityLabel = "A lemon with fresh herbs"
-            source = {require("../../../assets/images/recipedia/lemon-herbs.png")}
+            source = {require("../../../assets/images/lemon-herbs.png")}
             resizeMode = "contain"
             style = {styles.lemon} />
         </View>

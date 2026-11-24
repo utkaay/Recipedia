@@ -25,7 +25,7 @@ export function WelcomeScreen() {
         </Text>
         <Image
           accessibilityLabel = "A basket of fresh vegetables, herbs, and lemon"
-          source = {require("../../assets/images/recipedia/produce-basket.png")}
+          source = {require("../../assets/images/produce-basket.png")}
           resizeMode = "contain"
           style = {styles.illustration} />
         <AppButton
