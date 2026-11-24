@@ -7,6 +7,10 @@ const RecipeContext = createContext(null);
 
 export function RecipeProvider({ children }) {
   const { account } = useSession();
+  let initialUserId = null;
+  if (account && account.id !== undefined && account.id !== null) {
+    initialUserId = account.id;
+  }
   const [collection, setCollection] = useState({
     userId: undefined,
     recipes: [],
@@ -17,11 +21,18 @@ export function RecipeProvider({ children }) {
   const [isSaving, setIsSaving] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const writeInProgress = useRef(false);
-  const activeUserId = useRef(account?.id ?? null);
-  const currentUserId = account?.id ?? null;
+  const activeUserId = useRef(initialUserId);
+  let currentUserId = null;
+  if (account && account.id !== undefined && account.id !== null) {
+    currentUserId = account.id;
+  }
   const isCurrentCollection = collection.userId === currentUserId;
-  const recipes = isCurrentCollection ? collection.recipes : [];
-  const error = isCurrentCollection ? collection.error : null;
+  let recipes = [];
+  let error = null;
+  if (isCurrentCollection) {
+    recipes = collection.recipes;
+    error = collection.error;
+  }
   let status;
   if (!currentUserId) {
     status = "ready";
@@ -111,7 +122,7 @@ export function RecipeProvider({ children }) {
 
   useEffect(() => {
     let isCurrentLoad = true;
-    const userId = account?.id ?? null;
+    const userId = currentUserId;
     activeUserId.current = userId;
     if (!userId) {
       Promise.resolve().then(() => {
@@ -140,10 +151,10 @@ export function RecipeProvider({ children }) {
       })
       .catch((loadError) => {
         if (!isCurrentLoad) return;
-        const message =
-          loadError instanceof Error
-            ? loadError.message
-            : "Recipes could not be loaded from this device.";
+        let message = "Recipes could not be loaded from this device.";
+        if (loadError instanceof Error) {
+          message = loadError.message;
+        }
         setCollection({
           userId,
           recipes: [],
@@ -154,7 +165,7 @@ export function RecipeProvider({ children }) {
     return () => {
       isCurrentLoad = false;
     };
-  }, [account?.id, retryCount]);
+  }, [currentUserId, retryCount]);
 
   return (
     <RecipeContext.Provider
